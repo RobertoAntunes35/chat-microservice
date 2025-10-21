@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Socket.IO Test</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Socket.IO Web Test</h1>
+  <script>
+    const socket = io('http://localhost:2000', {
+      auth: {
+        token: "seu-token-aqui-se-estiver-usando-auth"
+      }
+    });
+
+    socket.on('connect', () => {
+      console.log('✅ Conectado ao servidor WebSocket:', socket.id);
+
+      // Exemplo: Entrar em uma conversa
+      socket.emit('join-conversation', {
+        userId: 'usuarioQueRecebeuChat',
+        conversationId: 'eda77068-eba5-44c4-9e72-d18ebca0bfd5'
+      });
+
+      // Exemplo: Enviar mensagem
+      socket.emit('send-message', {
+        conversationId: 'eda77068-eba5-44c4-9e72-d18ebca0bfd5',
+        message: {
+          from: 'usuarioQueCriouChat',
+          content: 'Olá, mundo!',
+          timestamp: new Date().toISOString()
+        }
+      });
+    });
+
+    // Evento para nova mensagem
+    socket.on('new-message', (data) => {
+      console.log('📨 Nova mensagem:', data);
+    });
+
+    // Evento de erro
+    socket.on('error', (data) => {
+      console.error('❌ Erro recebido:', data);
+    });
+
+    // Evento de typing
+    socket.on('user-typing', (data) => {
+      console.log('⌨️ Usuário digitando...', data);
+    });
+  </script>
+</body>
+</html>
